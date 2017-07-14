@@ -4,17 +4,31 @@
 ## This function creates a special "matrix" object that can cache its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
-        m <- NULL
-        set <- function(y) {
+        # define a cache to store inversed matrix
+        invs <- NULL
+        
+        #define nested set x function  
+        set_x <- function(y) {
                 x <<- y
-                m <<- NULL
+                invs <<- NULL
         }
-        get <- function() x
-        setinvers <- function(solve) m <<- solve
-        getinvers <- function() m
-        list(set = set, get = get,
-             setinvers = setinvers,
-             getinvers = getinvers)
+        
+        # define nested get x function
+        get_x <- function(){ x } 
+        
+        # define nested set cache function
+        set_invs <- function(inverse){
+                invs <<- inverse
+        }
+        
+        # define nested get cache function
+        get_invs <- function(){ invs } 
+        
+        # return a function list
+        list(set_x = set_x, 
+             get_x = get_x,
+             set_invs = set_invs,
+             get_invs = get_invs)
 
 }
 
@@ -22,17 +36,20 @@ makeCacheMatrix <- function(x = matrix()) {
 ## This function computes the inverse of the special "matrix" 
 ## returned by makeCacheMatrix above. 
 ## If the inverse has already been calculated (and the matrix has not changed),
-## then the cachesolve should retrieve the inverse from the cache.
+## then the cacheSolve should retrieve the inverse from the cache.
 
-cacheSolve <- function(x, ...) {
+cacheSolve <- function(cache, ...) {
         ## Return a matrix that is the inverse of 'x'
-        m <- x$getinvers()
-        if(!is.null(m)) {
+        # see if inverse already exist, if exist message and retrieve
+        invs <- cache$get_invs()
+        if(!is.null(invs)){
                 message("getting cached data")
-                return(m)
+                return(invs)
         }
-        data <- x$get()
-        m <- solve(data, ...)
-        x$setinvers(m)
-        m
+        
+        # or else, calculate, store and return
+        data <- cache$get_x()
+        invs <- solve(data, ...)
+        cache$set_invs(invs)
+        invs
 }
