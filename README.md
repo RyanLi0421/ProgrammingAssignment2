@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 what if change again before commit
 one more change
 
 
+=======
+>>>>>>> parent of fdedaa7... test1
 ### Introduction
 
 This second programming assignment will require you to write an R
